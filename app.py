@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import joblib
+import pickle
 import plotly.express as px
 
 st.set_page_config(page_title="Customer Analytics", layout="wide")
@@ -12,16 +12,12 @@ def load_data():
     products['StockCode'] = products['StockCode'].str.strip().str.strip("'\"")
     return rfm, products
 
-import pickle
-
 @st.cache_resource
 def load_models():
     with open('models/als_artifacts.pkl', 'rb') as f:
         als_artifacts = pickle.load(f)
     return {
-        'churn': joblib.load('models/churn_model.pkl'),
-        'clv': joblib.load('models/clv_model.pkl'),
-        'als': joblib.load('models/als_model.pkl'),
+        'als': als_artifacts['als_model'],
         'sparse_matrix': als_artifacts['sparse_matrix'],
         'customer_cat': als_artifacts['customer_cat'],
         'product_cat': als_artifacts['product_cat'],
